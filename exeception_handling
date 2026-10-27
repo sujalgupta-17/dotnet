@@ -1,0 +1,29 @@
+using System;
+class Program 
+{
+    static void Main(string[] args)
+    {
+        // int num1 = Convert.ToInt32(Console.ReadLine());
+        //int num2 = Convert.ToInt32(Console.ReadLine());
+
+        int[] numbers = { 10, 20, 30, 40 };
+
+        try
+        {
+            Console.Write("Enter Index : ");
+            int num1 = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Output : " + numbers[num1]);
+            //   Console.WriteLine("Division : " + num1 / num2);
+        }
+        catch (Exception ex)
+        {
+           Console.WriteLine("Error : " + ex.Message);
+        }
+        finally
+        {
+            Console.WriteLine("Programm finished");
+        }
+
+    }
+
+}
