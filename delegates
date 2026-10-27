@@ -1,0 +1,29 @@
+using System;
+class Program
+{
+    delegate void Message();
+
+    static void Welcome()
+    {
+        Console.WriteLine("Welcome");
+    }
+
+    static void Hello()
+    {
+        Console.WriteLine("Hello");
+    }
+
+    static void Bye()
+    {
+        Console.WriteLine("Bye");
+    }
+    static void Main(string[] args)
+    {
+        Message m = Welcome;
+        m += Hello;
+        m += Bye;
+        
+        m();
+    }
+}
+
