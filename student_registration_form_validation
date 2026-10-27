@@ -1,0 +1,205 @@
+
+ASP.NET EMPLOYEE REGISTRATION FORM WITH VALIDATION CONTROLS
+PROJECT SETUP SUMMARY:
+- Project Type: ASP.NET Web Application (.NET Framework) -> Empty / Web Forms
+- Project Name: EmployeeRegistration
+
+
+--- STEP 1: CONFIGURE Web.config ---
+1. Look at the "Solution Explorer" panel on the right.
+2. Double-click the file named "Web.config".
+3. Inside the <configuration> tags, add the <appSettings> block shown below.
+4. Save the file (Ctrl + S).
+
+--- STEP 2: CREATE EmployeeRegistration.aspx AND EmployeeRegistration.aspx.cs ---
+1. Right-click on the project name "EmployeeRegistration" (next to the green globe).
+2. Hover over "Add" -> click "New Item...".
+3. Under "Visual C#" on the left side, select "Web".
+4. From the center list, click "Web Form".
+5. Change the name at the bottom to: EmployeeRegistration.aspx
+6. Click "Add".
+   (Note: This will automatically generate both EmployeeRegistration.aspx and 
+    EmployeeRegistration.aspx.cs nested inside it).
+
+--- STEP 3: ADD DESIGN CODE TO EmployeeRegistration.aspx ---
+1. Double-click "EmployeeRegistration.aspx" to open it.
+2. Select everything (Ctrl + A) and delete it.
+3. Paste the complete ASPX markup provided in FILE 2 below.
+4. Save the file (Ctrl + S).
+
+--- STEP 4: ADD LOGIC CODE TO EmployeeRegistration.aspx.cs ---
+1. In Solution Explorer, click the small arrow (>) next to "EmployeeRegistration.aspx".
+2. Double-click "EmployeeRegistration.aspx.cs".
+3. Select everything (Ctrl + A) and delete it.
+4. Paste the complete C# code provided in FILE 3 below.
+5. Save the file (Ctrl + S).
+
+--- STEP 5: RUN AND TEST THE PROJECT ---
+1. Right-click "EmployeeRegistration.aspx" in Solution Explorer.
+2. Click "Set As Start Page".
+3. Press F5 (or click the green Play / "IIS Express" button at the top).
+
+--------------------------------------------------------------------------------
+FILE 1: Web.config
+Path: EmployeeRegistration/Web.config
+--------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <!-- Prevents Unobtrusive Validation JavaScript runtime errors -->
+    <add key="ValidationSettings:UnobtrusiveValidationMode" value="None" />
+  </appSettings>
+  
+  <system.web>
+    <compilation debug="true" targetFramework="4.8" />
+    <httpRuntime targetFramework="4.8" />
+  </system.web>
+</configuration>
+
+
+--------------------------------------------------------------------------------
+FILE 2: EmployeeRegistration.aspx
+Path: EmployeeRegistration/EmployeeRegistration.aspx
+--------------------------------------------------------------------------------
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EmployeeRegistration.aspx.cs" Inherits="EmployeeRegistration.EmployeeRegistration" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Employee Registration Form</title>
+</head>
+<body style="padding: 20px; font-family: Arial, sans-serif;">
+    <form id="form1" runat="server">
+        <h2>Employee Registration Form</h2>
+
+        <!-- 1. RequiredFieldValidator: Name -->
+        <asp:Label ID="lblName" runat="server" Text="Employee Name:"></asp:Label><br />
+        <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+        <asp:RequiredFieldValidator 
+            ID="rfvName" 
+            runat="server" 
+            ControlToValidate="txtName" 
+            ErrorMessage="Name is required!" 
+            ForeColor="Red">
+        </asp:RequiredFieldValidator>
+        <br /><br />
+
+        <!-- 2. RegularExpressionValidator: Email ID -->
+        <asp:Label ID="lblEmail" runat="server" Text="Email ID:"></asp:Label><br />
+        <asp:TextBox ID="txtEmail" runat="server"></asp:TextBox>
+        <asp:RequiredFieldValidator 
+            ID="rfvEmail" 
+            runat="server" 
+            ControlToValidate="txtEmail" 
+            ErrorMessage="Email is required!" 
+            ForeColor="Red">
+        </asp:RequiredFieldValidator>
+        <asp:RegularExpressionValidator 
+            ID="revEmail" 
+            runat="server" 
+            ControlToValidate="txtEmail" 
+            ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" 
+            ErrorMessage="Invalid email format!" 
+            ForeColor="Red">
+        </asp:RegularExpressionValidator>
+        <br /><br />
+
+        <!-- 3. RangeValidator: Age -->
+        <asp:Label ID="lblAge" runat="server" Text="Age (21 to 60):"></asp:Label><br />
+        <asp:TextBox ID="txtAge" runat="server"></asp:TextBox>
+        <asp:RequiredFieldValidator 
+            ID="rfvAge" 
+            runat="server" 
+            ControlToValidate="txtAge" 
+            ErrorMessage="Age is required!" 
+            ForeColor="Red">
+        </asp:RequiredFieldValidator>
+        <asp:RangeValidator 
+            ID="rvAge" 
+            runat="server" 
+            ControlToValidate="txtAge" 
+            MinimumValue="21" 
+            MaximumValue="60" 
+            Type="Integer" 
+            ErrorMessage="Age must be between 21 and 60!" 
+            ForeColor="Red">
+        </asp:RangeValidator>
+        <br /><br />
+
+        <!-- 4. CompareValidator: Password and Confirm Password -->
+        <asp:Label ID="lblPass" runat="server" Text="Password:"></asp:Label><br />
+        <asp:TextBox ID="txtPass" runat="server" TextMode="Password"></asp:TextBox>
+        <asp:RequiredFieldValidator 
+            ID="rfvPass" 
+            runat="server" 
+            ControlToValidate="txtPass" 
+            ErrorMessage="Password is required!" 
+            ForeColor="Red">
+        </asp:RequiredFieldValidator>
+        <br /><br />
+
+        <asp:Label ID="lblConfirmPass" runat="server" Text="Confirm Password:"></asp:Label><br />
+        <asp:TextBox ID="txtConfirmPass" runat="server" TextMode="Password"></asp:TextBox>
+        <asp:RequiredFieldValidator 
+            ID="rfvConfirmPass" 
+            runat="server" 
+            ControlToValidate="txtConfirmPass" 
+            ErrorMessage="Confirm Password is required!" 
+            ForeColor="Red">
+        </asp:RequiredFieldValidator>
+        <asp:CompareValidator 
+            ID="cvPass" 
+            runat="server" 
+            ControlToValidate="txtConfirmPass" 
+            ControlToCompare="txtPass" 
+            ErrorMessage="Passwords do not match!" 
+            ForeColor="Red">
+        </asp:CompareValidator>
+        <br /><br />
+
+        <!-- Submit Button -->
+        <asp:Button ID="btnSubmit" runat="server" Text="Register" OnClick="btnSubmit_Click" />
+        <br /><br />
+
+        <!-- Output Label -->
+        <asp:Label ID="lblOutput" runat="server" Font-Bold="True"></asp:Label>
+    </form>
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+FILE 3: EmployeeRegistration.aspx.cs
+Path: EmployeeRegistration/EmployeeRegistration.aspx/EmployeeRegistration.aspx.cs
+--------------------------------------------------------------------------------
+using System;
+using System.Drawing;
+using System.Web.UI;
+
+namespace EmployeeRegistration
+{
+    public partial class EmployeeRegistration : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
+
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                lblOutput.ForeColor = Color.Green;
+                lblOutput.Text = "Employee Registration Successful!<br />" +
+                                 "Name: " + txtName.Text + "<br />" +
+                                 "Email: " + txtEmail.Text + "<br />" +
+                                 "Age: " + txtAge.Text;
+            }
+            else
+            {
+                lblOutput.ForeColor = Color.Red;
+                lblOutput.Text = "Please fix validation errors before submitting.";
+            }
+        }
+    }
+}
+================================================================================
