@@ -1,0 +1,196 @@
+
+3. Select "ASP.NET Core Web App (Model-View-Controller)" and click Next.
+4. Set Project name to: StudentRecordPWA
+
+--------------------------------------------------------------------------------
+FILE 1: Models/Student.cs
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- In Solution Explorer, right-click the "Models" folder.
+- Click Add -> Class...
+- Name it: Student.cs
+- Click Add.
+
+PASTE THIS CODE:
+--------------------------------------------------------------------------------
+namespace StudentRecordPWA.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Course { get; set; }
+        public int Age { get; set; }
+    }
+}
+
+
+--------------------------------------------------------------------------------
+FILE 2: Controllers/StudentController.cs
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- In Solution Explorer, right-click the "Controllers" folder.
+- Click Add -> Controller...
+- Select "MVC Controller - Empty" -> Click Add.
+- Name it: StudentController.cs
+- Click Add.
+
+PASTE THIS CODE:
+--------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Mvc;
+using StudentRecordPWA.Models;
+using System.Collections.Generic;
+
+namespace StudentRecordPWA.Controllers
+{
+    public class StudentController : Controller
+    {
+        public IActionResult Index()
+        {
+            List<Student> students = new List<Student>()
+            {
+                new Student { Id = 1, Name = "Tanu", Course = "BSC IT", Age = 20 },
+                new Student { Id = 2, Name = "Pooja", Course = "BSC CS", Age = 21 },
+                new Student { Id = 3, Name = "Mayank", Course = "BCA", Age = 20 }
+            };
+
+            return View(students);
+        }
+    }
+}
+
+
+--------------------------------------------------------------------------------
+FILE 3: Views/Student/Index.cshtml
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- In Solution Explorer, right-click the "Views" folder -> Add -> New Folder named "Student".
+- Right-click the new "Student" folder -> Add -> View...
+- Choose "Razor View - Empty" -> click Add -> name it: Index.cshtml -> click Add.
+
+PASTE THIS CODE:
+--------------------------------------------------------------------------------
+@model IEnumerable<StudentRecordPWA.Models.Student>
+
+<h2>Student Records</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Age</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Name</td>
+            <td>@item.Course</td>
+            <td>@item.Age</td>
+        </tr>
+    }
+</table>
+
+
+--------------------------------------------------------------------------------
+FILE 4: wwwroot/manifest.json
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- Right-click "wwwroot" -> Add -> New Item...
+- Select JSON File -> name it: manifest.json -> Click Add.
+
+PASTE THIS CODE:
+--------------------------------------------------------------------------------
+{
+  "name": "Student Record PWA",
+  "short_name": "StudentPWA",
+  "start_url": "/Student/Index",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "icons": [
+    {
+      "src": "/icons/showicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+
+
+--------------------------------------------------------------------------------
+FILE 5: wwwroot/service-worker.js
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- Right-click "wwwroot" -> Add -> New Item...
+- Select JavaScript File -> name it: service-worker.js -> Click Add.
+
+PASTE THIS CODE:
+--------------------------------------------------------------------------------
+const CACHE_NAME = "student-pwa-cache-v1";
+const urlsToCache = [
+    "/Student/Index"
+];
+
+self.addEventListener("install", event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                return cache.addAll(urlsToCache);
+            })
+    );
+});
+
+self.addEventListener("fetch", event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                return response || fetch(event.request);
+            })
+    );
+});
+
+
+--------------------------------------------------------------------------------
+FILE 6: Views/Shared/_Layout.cshtml
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- Expand Views -> Shared -> double-click _Layout.cshtml.
+
+WHAT TO ADD:
+1. Inside the <head> tags:
+   <link rel="manifest" href="/manifest.json" />
+
+2. Right before the closing </body> tag:
+   <script>
+       if ('serviceWorker' in navigator) {
+           navigator.serviceWorker.register('/service-worker.js')
+               .then(reg => console.log('Service Worker Registered!'))
+               .catch(err => console.log('Service Worker Failed:', err));
+       }
+   </script>
+
+
+--------------------------------------------------------------------------------
+FILE 7: Program.cs (Default Route Configuration)
+--------------------------------------------------------------------------------
+WHERE IT GOES:
+- Open Program.cs in project root.
+- Ensure app.UseStaticFiles(); is enabled.
+- Change default route so it opens Student/Index directly:
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Student}/{action=Index}/{id?}");
+
+
+--------------------------------------------------------------------------------
+HOW TO RUN AND TEST:
+--------------------------------------------------------------------------------
+1. Press F5 to launch the application.
+2. The Student Records table with Tanu, Pooja, and Mayank will display.
+3. Open Developer Tools (F12) -> Application -> Service Workers:
+   Verify service-worker.js is activated and running.
+4. Check "Offline" in DevTools and refresh: the records continue loading from cache!
+================================================================================
