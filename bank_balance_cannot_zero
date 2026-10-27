@@ -1,0 +1,55 @@
+
+using System;
+
+namespace BankAccountApp
+{
+    class BankAccount
+    {
+        public int AccountNumber { get; set; }
+
+        private double balance;
+
+        public double Balance
+        {
+            get
+            {
+                return balance;
+            }
+            set
+            {
+                if (value > 0)
+                {
+                    balance = value;
+                }
+                else if (value == 0)
+                {
+                    Console.WriteLine("Balance cannot be zero!");
+                }
+                else
+                {
+                    Console.WriteLine("Balance cannot be negative!");
+                }
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            BankAccount account = new BankAccount();
+
+            account.AccountNumber = 101;
+            account.Balance = 100;
+
+            Console.WriteLine("Account Number: " + account.AccountNumber);
+            Console.WriteLine("Current Balance: " + account.Balance);
+
+            account.Balance = -100;  // Change this value manually
+
+            Console.WriteLine("Final Balance: " + account.Balance);
+
+            Console.ReadLine();
+        }
+    }
+}
