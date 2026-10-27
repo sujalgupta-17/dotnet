@@ -1,0 +1,271 @@
+
+PROJECT DETAILS:
+- Template: ASP.NET Core Web App (Model-View-Controller)
+- Project Name: Offline_PWA
+================================================================================
+DIRECTORY & FILE STRUCTURE
+================================================================================
+Offline_PWA/
+│
+├── Program.cs                                  <-- Middleware & Static files
+├── wwwroot/
+│   ├── manifest.json                           <-- PWA Manifest file
+│   ├── offline.html                            <-- Offline fallback page
+│   ├── service-worker.js                       <-- Cache & offline fetch logic
+│   └── icon/
+│       └── icons(1).png                        <-- Application icon (192x192)
+└── Views/
+    ├── Home/
+    │   └── Index.cshtml                        <-- College portal offline UI
+    └── Shared/
+        └── _Layout.cshtml                      <-- Manifest & worker registration
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS: WHERE TO CLICK (FROM STEP ZERO)
+================================================================================
+
+--- STEP 1: CREATE PROJECT ---
+1. Open Visual Studio.
+2. Click "Create a new project".
+3. Search for: "ASP.NET Core Web App (Model-View-Controller)".
+4. Click "Next".
+5. Project Name: Offline_PWA
+6. Click "Next" -> select .NET 8.0 / 7.0 / 6.0 -> click "Create".
+
+--- STEP 2: Views/Home/Index.cshtml ---
+1. In Solution Explorer, expand "Views" -> expand "Home".
+2. Double-click "Index.cshtml".
+3. Delete all content and replace with FILE 1 below.
+4. Save (Ctrl + S).
+
+--- STEP 3: wwwroot/manifest.json ---
+1. Right-click the "wwwroot" folder in Solution Explorer.
+2. Click "Add" -> "New Item...".
+3. Select "JSON File" (or Web -> JSON File).
+4. Name: manifest.json
+5. Click "Add".
+6. Replace all content with FILE 2 below and save (Ctrl + S).
+
+--- STEP 4: wwwroot/offline.html ---
+1. Right-click the "wwwroot" folder.
+2. Click "Add" -> "New Item...".
+3. Select "HTML Page".
+4. Name: offline.html
+5. Click "Add".
+6. Replace all content with FILE 3 below and save (Ctrl + S).
+
+--- STEP 5: wwwroot/icon/icons(1).png ---
+1. Right-click "wwwroot" -> "Add" -> "New Folder".
+2. Name the folder: icon
+3. Add any PNG image inside this folder named: icons(1).png
+
+--- STEP 6: wwwroot/service-worker.js ---
+1. Right-click "wwwroot" folder.
+2. Click "Add" -> "New Item...".
+3. Select "JavaScript File".
+4. Name: service-worker.js
+5. Click "Add".
+6. Replace all content with FILE 4 below and save (Ctrl + S).
+
+--- STEP 7: Views/Shared/_Layout.cshtml ---
+1. In Solution Explorer, expand "Views" -> expand "Shared".
+2. Double-click "_Layout.cshtml".
+3. Add the manifest link in <head> and registration script before </body> (or replace with FILE 5 below).
+4. Save (Ctrl + S).
+
+--- STEP 8: Program.cs ---
+1. Double-click "Program.cs" in the project root.
+2. Make sure app.UseStaticFiles(); is present (FILE 6).
+3. Save (Ctrl + S).
+
+================================================================================
+FULL CODE FOR EACH FILE
+================================================================================
+
+--------------------------------------------------------------------------------
+FILE 1: Views/Home/Index.cshtml
+Path: Offline_PWA/Views/Home/Index.cshtml
+--------------------------------------------------------------------------------
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1>College Information Portal</h1>
+    <h3>PWA Offline Demo</h3>
+    <p>This application works without internet connection.</p>
+</div>
+
+
+--------------------------------------------------------------------------------
+FILE 2: wwwroot/manifest.json
+Path: Offline_PWA/wwwroot/manifest.json
+--------------------------------------------------------------------------------
+{
+  "name": "Offline PWA",
+  "short_name": "OfflinePWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "icons": [
+    {
+      "src": "/icon/icons(1).png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+
+
+--------------------------------------------------------------------------------
+FILE 3: wwwroot/offline.html
+Path: Offline_PWA/wwwroot/offline.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Offline</title>
+</head>
+<body>
+    <h1>No Internet Connection</h1>
+    <h3>Please check your internet connection.</h3>
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+FILE 4: wwwroot/service-worker.js
+Path: Offline_PWA/wwwroot/service-worker.js
+--------------------------------------------------------------------------------
+const CACHE_NAME = "pwa-cache-v1";
+const urlsToCache = [
+    "/",
+    "/Home/Index"
+];
+
+self.addEventListener("install", event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                return cache.addAll(urlsToCache);
+            })
+    );
+});
+
+self.addEventListener("fetch", event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                return response || fetch(event.request);
+            })
+    );
+});
+
+
+--------------------------------------------------------------------------------
+FILE 5: Views/Shared/_Layout.cshtml
+Path: Offline_PWA/Views/Shared/_Layout.cshtml
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Offline_PWA</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="manifest" href="/manifest.json" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Offline_PWA</a>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - Offline_PWA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function () {
+                    console.log('Service Worker Registered!');
+                })
+                .catch(function (error) {
+                    console.log('Service Worker Registration Failed : ', error);
+                });
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+FILE 6: Program.cs
+Path: Offline_PWA/Program.cs
+--------------------------------------------------------------------------------
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+================================================================================
+HOW TO TEST OFFLINE MODE IN THE BROWSER
+================================================================================
+1. Press F5 in Visual Studio to launch the website.
+2. In Google Chrome or Microsoft Edge, press F12 (Developer Tools).
+3. Go to the "Application" tab -> click "Service Workers" on the left menu.
+4. Verify that "service-worker.js" is status: activated and running.
+5. In Developer Tools, tick the "Offline" checkbox (or switch Network tab to "Offline").
+6. Reload the page (Ctrl + R):
+   - The application will continue to load directly from the Service Worker cache!
+================================================================================
