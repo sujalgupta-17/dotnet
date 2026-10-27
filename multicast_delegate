@@ -1,0 +1,31 @@
+using System;
+public delegate void Demo();
+class Test
+{
+    public void Show()
+    {
+        Console.WriteLine("Show Method Called");
+    }
+    public void Display()
+    {
+        Console.WriteLine("Display Method Called");
+    }
+    public void Print()
+    {
+        Console.WriteLine("Print Method Called");
+    }
+}
+class Program
+
+{
+    static void Main()
+    {
+        Test t = new Test();
+        Demo d;
+
+        d = t.Show;
+        d += t.Display;
+        d += t.Print;
+        d();
+    }
+}
