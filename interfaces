@@ -1,0 +1,31 @@
+using System;
+interface IFather
+{
+    void FatherProperty();
+}
+interface IMother
+{
+    void MotherProperty();
+}
+class Child : IFather, IMother
+{
+    public void FatherProperty()
+    {
+        Console.WriteLine("Fathers property");
+    }
+    public void MotherProperty()
+    {
+        Console.WriteLine("Mothers property");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Child c = new Child();
+
+        c.FatherProperty();
+        c.MotherProperty();
+    }
+}
