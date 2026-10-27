@@ -1,0 +1,171 @@
+
+PROJECT SETUP SUMMARY:
+- Project Type: ASP.NET Web Application (.NET Framework)
+- Template: Empty (with Web Forms checked)
+- Language: C#
+- Project Name: CookiesDemoApp
+
+==============================================================================
+PROJECT FILE AND FOLDER STRUCTURE
+================================================================================
+CookiesDemoApp/
+│
+├── Cookies_Demo.aspx          <-- Web Form UI (TextBox, Buttons, and Output Label)
+└── Cookies_Demo.aspx.cs       <-- Code-behind logic (Writing and Reading Cookies)
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS FROM STEP ZERO (WHERE TO CLICK)
+================================================================================
+
+--- STEP 1: CREATE THE PROJECT IN VISUAL STUDIO ---
+1. Open Visual Studio.
+2. Click "Create a new project".
+3. In the search box at the top, type: ASP.NET Web Application
+4. Select the template named:
+   "ASP.NET Web Application (.NET Framework)" (with the C# tag).
+5. Click "Next".
+6. Project name: CookiesDemoApp
+7. Choose your desired location folder.
+8. Click "Create".
+9. In the template selection window, pick "Empty", check "Web Forms" if shown, and click "Create".
+
+--- STEP 2: ADD THE WEB FORM (Cookies_Demo.aspx) ---
+1. Look at the "Solution Explorer" panel on the right.
+2. Right-click on the project name "CookiesDemoApp" (globe icon).
+3. Hover over "Add" -> click "New Item...".
+4. On the left side under Visual C#, select "Web".
+5. From the middle list, click "Web Form" (Do NOT pick "Web Form with Master Page").
+6. Change the file name at the bottom to:
+   Cookies_Demo.aspx
+7. Click "Add".
+   (Note: Visual Studio automatically generates Cookies_Demo.aspx and nests
+    Cookies_Demo.aspx.cs underneath it).
+
+--- STEP 3: UPDATE Cookies_Demo.aspx (FRONTEND MARKUP) ---
+1. Double-click "Cookies_Demo.aspx" in Solution Explorer to open it.
+2. Select all existing text (Ctrl + A) and press Delete.
+3. Copy and paste the entire code from FILE 1 below into the editor.
+4. Save the file (Ctrl + S).
+
+--- STEP 4: UPDATE Cookies_Demo.aspx.cs (CODE-BEHIND LOGIC) ---
+1. In Solution Explorer, click the small triangle/arrow (>) next to "Cookies_Demo.aspx".
+2. Double-click "Cookies_Demo.aspx.cs" to open it.
+3. Select all existing text (Ctrl + A) and press Delete.
+4. Copy and paste the entire code from FILE 2 below into the editor.
+5. Save the file (Ctrl + S).
+
+--- STEP 5: RUN AND TEST THE PROJECT ---
+1. In Solution Explorer, right-click "Cookies_Demo.aspx".
+2. Click "Set As Start Page".
+3. Press F5 (or Ctrl + F5), or click the green Play button ("IIS Express") at the top.
+4. In your browser:
+   - Type a name into the "User Name" box (e.g., "John Doe").
+   - Click "Save Cookie": you will see "Cookies saved successfully!".
+   - Click "Show Cookie": the label displays both the Session Cookie value and the Persistent Cookie value.
+
+================================================================================
+FULL CODE FOR EACH FILE
+================================================================================
+
+--------------------------------------------------------------------------------
+FILE 1: Cookies_Demo.aspx
+Path: CookiesDemoApp/Cookies_Demo.aspx
+--------------------------------------------------------------------------------
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Cookies_Demo.aspx.cs" Inherits="CookiesDemoApp.Cookies_Demo" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Cookies Demo</title>
+</head>
+<body style="padding: 20px; font-family: Arial, sans-serif;">
+    <form id="form1" runat="server">
+        <h2>Cookies Demo in ASP.NET</h2>
+
+        <asp:Label ID="Label1" runat="server" Text="User Name:"></asp:Label><br />
+        <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+        <br /><br />
+
+        <asp:Button ID="btnSave" runat="server" Text="Save Cookie" OnClick="btnSave_Click" />
+        <asp:Button ID="btnShow" runat="server" Text="Show Cookie" OnClick="btnShow_Click" />
+        <br /><br />
+
+        <asp:Label ID="lblOutput" runat="server" Font-Bold="True"></asp:Label>
+    </form>
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+FILE 2: Cookies_Demo.aspx.cs
+Path: CookiesDemoApp/Cookies_Demo.aspx.cs
+--------------------------------------------------------------------------------
+using System;
+using System.Drawing;
+using System.Web;
+using System.Web.UI;
+
+namespace CookiesDemoApp
+{
+    public partial class Cookies_Demo : System.Web.UI.Page
+    {
+        // Explicit control definitions to link ASPX to C#
+        protected global::System.Web.UI.WebControls.TextBox txtName;
+        protected global::System.Web.UI.WebControls.Label lblOutput;
+        protected global::System.Web.UI.WebControls.Button btnSave;
+        protected global::System.Web.UI.WebControls.Button btnShow;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
+
+        // Save both Session Cookie and Persistent Cookie
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            // 1. Session Cookie (Deleted when browser closes)
+            HttpCookie sessionCookie = new HttpCookie("sessionUser");
+            sessionCookie.Value = txtName.Text;
+            Response.Cookies.Add(sessionCookie);
+
+            // 2. Persistent Cookie (Expires in 1 day)
+            HttpCookie persistentCookie = new HttpCookie("persistentUser");
+            persistentCookie.Value = txtName.Text;
+            persistentCookie.Expires = DateTime.Now.AddDays(1);
+            Response.Cookies.Add(persistentCookie);
+
+            lblOutput.ForeColor = Color.Green;
+            lblOutput.Text = "Cookies saved successfully!";
+        }
+
+        // Retrieve and display both Cookies
+        protected void btnShow_Click(object sender, EventArgs e)
+        {
+            string sessionData = string.Empty;
+            string persistentData = string.Empty;
+
+            // Check Session Cookie
+            if (Request.Cookies["sessionUser"] != null)
+            {
+                sessionData = Request.Cookies["sessionUser"].Value;
+            }
+            else
+            {
+                sessionData = "Not Found / Expired";
+            }
+
+            // Check Persistent Cookie
+            if (Request.Cookies["persistentUser"] != null)
+            {
+                persistentData = Request.Cookies["persistentUser"].Value;
+            }
+            else
+            {
+                persistentData = "Not Found / Expired";
+            }
+
+            // Display results
+            lblOutput.ForeColor = Color.Blue;
+            lblOutput.Text = "Session Cookie: " + sessionData + "<br />" +
+                             "Persistent Cookie: " + persistentData;
+        }
+    }
+}
