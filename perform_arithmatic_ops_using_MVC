@@ -1,0 +1,107 @@
+ASP.NET Core Web App (Model-View-Controller)
+ArithmeticMvc/
+├── Controllers/
+│   └── HomeController.cs
+├── Models/
+│   └── Calculator.cs
+└── Views/
+    └── Home/
+        └── Index.cshtml
+
+calculator.cs:-
+namespace ArithmeticMvc.Models
+{
+    public class Calculator
+    {
+        public double Number1 { get; set; }
+        public double Number2 { get; set; }
+        public required string Operation { get; set; }
+        public double Result { get; set; }
+    }
+}
+
+index.cshtml:-
+@model ArithmeticMvc.Models.Calculator
+
+<h2>Arithmetic Operations</h2>
+
+<form method="post">
+    <label>Enter Number 1</label><br />
+    <input type="number" step="any" asp-for="Number1" /><br /><br />
+
+    <label>Enter Number 2</label><br />
+    <input type="number" step="any" asp-for="Number2" /><br /><br />
+
+    <label>Select Operation</label><br />
+    <select asp-for="Operation">
+        <option value="+">Addition</option>
+        <option value="-">Subtraction</option>
+        <option value="*">Multiplication</option>
+        <option value="/">Division</option>
+    </select>
+    <br /><br />
+
+    <input type="submit" value="Calculate" />
+</form>
+
+@if (Model != null)
+{
+    <h3>Result: @Model.Result</h3>
+}
+
+HomeController.cs:-
+using ArithmeticMvc.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+
+namespace ArithmeticMvc.Controllers
+{
+    public class HomeController : Controller
+    {
+        // GET: /Home/Index
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        // POST: /Home/Index
+        [HttpPost]
+        public IActionResult Index(Calculator calc)
+        {
+            switch (calc.Operation)
+            {
+                case "+":
+                    calc.Result = calc.Number1 + calc.Number2;
+                    break;
+
+                case "-":
+                    calc.Result = calc.Number1 - calc.Number2;
+                    break;
+
+                case "*":
+                    calc.Result = calc.Number1 * calc.Number2;
+                    break;
+
+                case "/":
+                    if (calc.Number2 != 0)
+                    {
+                        calc.Result = calc.Number1 / calc.Number2;
+                    }
+                    break;
+            }
+
+            return View(calc);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+}
