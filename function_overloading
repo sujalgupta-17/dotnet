@@ -1,0 +1,24 @@
+using System;
+
+class program
+{
+    static void Display()
+    {
+        Console.WriteLine("Welcome");
+    }
+    static void Display(string name)
+    {
+        Console.WriteLine("Welcome " + name);
+    }
+
+    static void Display(string name, int age)
+    {
+        Console.WriteLine("Welcome " + name + "  Age :" + age);
+    }
+    static void Main(string[] args)
+    {
+        Display();
+        Display("john");
+        Display("john", 18);
+    }
+}
