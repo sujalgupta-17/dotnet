@@ -1,0 +1,242 @@
+- Project Type: ASP.NET Core Web App (Model-View-Controller)
+- Project Name: CollegePortalPWA
+CollegePortalPWA/
+│
+├── Program.cs                                <-- Static files & routing middleware
+├── wwwroot/
+│   ├── manifest.json                         <-- PWA Manifest file
+│   ├── service-worker.js                     <-- Service worker registration script
+│   └── icons/
+│       ├── picture-192.png                   <-- 192x192 app icon
+│       └── picture-512.png                   <-- 512x512 app icon
+└── Views/
+    ├── Home/
+    │   └── Index.cshtml                      <-- College information home page
+    └── Shared/
+        └── _Layout.cshtml                    <-- Links manifest.json & registers service worker
+
+--- STEP 1: Views/Home/Index.cshtml ---
+1. In Solution Explorer, expand the "Views" folder.
+2. Expand the "Home" folder.
+3. Double-click "Index.cshtml".
+4. Delete all existing code and paste the code from FILE 1 below.
+5. Save (Ctrl + S).
+
+--- STEP 2: Create wwwroot/icons folder and add icons ---
+1. In Solution Explorer, right-click the "wwwroot" folder.
+2. Click "Add" -> "New Folder".
+3. Name the folder: icons
+4. Add any two PNG image files inside this folder and rename them to:
+   - picture-192.png
+   - picture-512.png
+
+--- STEP 3: Create wwwroot/manifest.json ---
+1. Right-click the "wwwroot" folder.
+2. Click "Add" -> "New Item...".
+3. Select "JSON File" (or Web -> JSON File).
+4. Name the file: manifest.json
+5. Click "Add".
+6. Delete all default code and paste the code from FILE 2 below.
+7. Save (Ctrl + S).
+
+--- STEP 4: Create wwwroot/service-worker.js ---
+1. Right-click the "wwwroot" folder.
+2. Click "Add" -> "New Item...".
+3. Select "JavaScript File".
+4. Name the file: service-worker.js
+5. Click "Add".
+6. Delete all default code and paste the code from FILE 3 below.
+7. Save (Ctrl + S).
+
+--- STEP 5: Update Views/Shared/_Layout.cshtml ---
+1. In Solution Explorer, expand "Views" -> expand "Shared".
+2. Double-click "_Layout.cshtml".
+3. Inside the <head> tags, add:
+   <link rel="manifest" href="~/manifest.json" />
+4. Just before the closing </body> tag, add the service worker registration script block.
+   (Or replace the entire file with FILE 4 below).
+5. Save (Ctrl + S).
+
+--- STEP 6: Verify Program.cs ---
+1. Double-click "Program.cs" in your project root.
+2. Ensure that "app.UseStaticFiles();" is present so files in wwwroot are served properly.
+3. Save (Ctrl + S).
+
+
+--------------------------------------------------------------------------------
+FILE 1: Index.cshtml
+Path: CollegePortalPWA/Views/Home/Index.cshtml
+--------------------------------------------------------------------------------
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1>College Information Portal</h1>
+    <h3>Welcome to XYZ College</h3>
+    <p>Courses Offered</p>
+    <ul>
+        <li>BSC IT</li>
+        <li>BCA</li>
+        <li>BSC CS</li>
+    </ul>
+    <p>Contact : 8089012364</p>
+</div>
+
+
+--------------------------------------------------------------------------------
+FILE 2: manifest.json
+Path: CollegePortalPWA/wwwroot/manifest.json
+--------------------------------------------------------------------------------
+{
+  "name": "College Information Portal",
+  "short_name": "CollegePortal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#20a5fd",
+  "icons": [
+    {
+      "src": "/icons/picture-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/picture-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
+
+--------------------------------------------------------------------------------
+FILE 3: service-worker.js
+Path: CollegePortalPWA/wwwroot/service-worker.js
+--------------------------------------------------------------------------------
+self.addEventListener('install', function (event) {
+    console.log('Service Worker Installed');
+});
+
+self.addEventListener('fetch', function (event) {
+    console.log('Fetching : ', event.request.url);
+});
+
+
+--------------------------------------------------------------------------------
+FILE 4: _Layout.cshtml
+Path: CollegePortalPWA/Views/Shared/_Layout.cshtml
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CollegePortalPWA</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <!-- Link to PWA Manifest -->
+    <link rel="manifest" href="~/manifest.json" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CollegePortalPWA</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - CollegePortalPWA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Register Service Worker for PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function (registration) {
+                    console.log('Service Worker Registered');
+                })
+                .catch(function (error) {
+                    console.log('Service Worker Registration Failed : ', error);
+                });
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+FILE 5: Program.cs
+Path: CollegePortalPWA/Program.cs
+--------------------------------------------------------------------------------
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles(); // CRITICAL: Allows serving manifest.json, icons, and service-worker.js
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+================================================================================
+HOW TO RUN AND VERIFY THE PWA IN BROWSER
+================================================================================
+1. Press F5 in Visual Studio to run the project.
+2. In Google Chrome or Microsoft Edge:
+   - Notice the "Install app" icon appears on the right side of the URL/address bar.
+   - Click "Install" to install the College Information Portal directly to your desktop/OS.
+3. Open Developer Tools (Press F12):
+   - Switch to the "Console" tab: Verify you see "Service Worker Registered", "Service Worker Installed", and the URL fetch logs.
+   - Switch to the "Application" tab:
+     * Click "Manifest" on the left panel to verify your name, colors, and icons.
+     * Click "Service workers" to verify the service worker is activated and running.
+================================================================================
