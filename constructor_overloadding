@@ -1,0 +1,24 @@
+using System;
+class Employee
+{
+    public Employee()
+    {
+        Console.WriteLine("Default Constructor");
+    }
+    public Employee(int id)
+    {
+        Console.WriteLine("ID = " + id);
+    }
+
+    public Employee(string name, int age)
+    {
+        Console.WriteLine("Name = " + name + " Age = " + age);
+    }
+
+    static void Main(string[] args)
+    {
+        Employee e1 = new Employee();
+        Employee e2 = new Employee(101);
+        Employee e3 = new Employee("john", 18);
+    }
+}
