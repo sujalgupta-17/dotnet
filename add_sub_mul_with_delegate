@@ -1,0 +1,54 @@
+using System;
+namespace DelegateArithmeticApp
+
+{
+    public delegate void Calculation(int a, int b);
+    class Arithmetic
+
+    {
+
+        public void Add(int a, int b)
+
+        {
+            Console.WriteLine("Addition = " + (a + b));
+        }
+        public void Subtract(int a, int b)
+        {
+            Console.WriteLine("Subtraction = " + (a - b));
+        }
+        public void Multiply(int a, int b)
+        {
+            Console.WriteLine("Multiplication = " + (a * b));
+        }
+        public void Divide(int a, int b)
+        {
+            if (b != 0)
+            {
+                Console.WriteLine("Division = " + (a / b));
+            }
+            else
+            {
+                Console.WriteLine("Cannot divide by zero");
+            }
+        }
+    }
+    class Program
+    {
+        static void Main()
+
+        {
+            Arithmetic obj = new Arithmetic();
+            Calculation c;
+            c = obj.Add;
+            c(20, 10); // Output: Addition = 30
+            c = obj.Subtract;
+            c(20, 10); // Output: Subtraction = 10
+            c = obj.Multiply;
+            c(20, 10); // Output: Multiplication = 200
+            c = obj.Divide;
+            c(20, 10); // Output: Division = 2
+            Console.ReadLine();
+        }
+    }
+}
+
