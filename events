@@ -1,0 +1,17 @@
+using System;
+delegate void Notification();
+class Program
+{
+    public static event Notification Notify;
+    static void ShowMessage()
+    {
+        Console.WriteLine("Event Executed");
+    }
+    static void Main(String[] args)
+    {
+
+
+        Notify += ShowMessage;
+        Notify();
+    }
+}
