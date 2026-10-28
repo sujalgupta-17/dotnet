@@ -1,0 +1,180 @@
+
+PROJECT SETUP SUMMARY:
+- Template: ASP.NET Core Web API (C#)
+- Project Name: StudentAPI
+
+StudentAPI/
+│
+├── Controllers/
+│   └── StudentController.cs     <-- API Controller handling HTTP GET requests
+├── Models/
+│   └── Student.cs               <-- Model class defining Student properties
+├── Program.cs                   <-- Application entry point & service registration
+└── appsettings.json             <-- Application configuration settings
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS FROM STEP ZERO (WHERE TO CLICK)
+================================================================================
+
+--- STEP 1: CREATE PROJECT IN VISUAL STUDIO ---
+1. Open Visual Studio.
+2. Click "Create a new project".
+3. In the top search box, type: ASP.NET Core Web API
+4. Select the template named:
+   "ASP.NET Core Web API" (verify it displays the C# tag).
+5. Click "Next".
+6. Configure project details:
+   - Project name: StudentAPI
+   - Location: Choose your preferred directory.
+7. Click "Next".
+8. In the "Additional information" screen:
+   - Framework: Select .NET 6.0, .NET 7.0, or .NET 8.0.
+   - Authentication type: None.
+   - Ensure "Use controllers (uncheck to use minimal APIs)" is CHECKED.
+   - Check "Configure for HTTPS".
+9. Click "Create".
+
+--- STEP 2: CREATE MODELS FOLDER AND STUDENT MODEL CLASS ---
+1. In Solution Explorer on the right, right-click the project name "StudentAPI".
+2. Hover over "Add" -> click "New Folder".
+3. Name the folder: Models
+4. Right-click the newly created "Models" folder.
+5. Hover over "Add" -> click "Class...".
+6. Set the Name at the bottom to:
+   Student.cs
+7. Click "Add".
+8. Delete all default code in "Student.cs", paste the complete code from FILE 1 below, and save (Ctrl + S).
+
+--- STEP 3: CREATE THE API CONTROLLER ---
+1. In Solution Explorer, right-click the "Controllers" folder.
+   (If it does not exist, right-click the project -> Add -> New Folder -> name it "Controllers").
+2. Hover over "Add" -> click "Controller...".
+3. In the left categories panel, click "API".
+4. In the center list, select:
+   "API Controller - Empty"
+5. Click "Add".
+6. In the prompt dialog, set the Controller name to:
+   StudentController.cs
+7. Click "Add".
+8. Delete all default code in "StudentController.cs", paste the complete code from FILE 2 below, and save (Ctrl + S).
+
+--- STEP 4: VERIFY PROGRAM.CS ---
+1. Open "Program.cs" in Solution Explorer.
+2. Verify that controller mapping services are enabled (see FILE 3).
+3. Save (Ctrl + S).
+
+--- STEP 5: RUN AND TEST THE WEB API ---
+1. Press F5 (or Ctrl + F5) or click the green Play button ("https" / "IIS Express") at the top toolbar.
+2. The default browser window will launch.
+3. In the address bar, append `/api/Student` to the URL:
+   Example: https://localhost:7032/api/Student
+4. The browser will display the student records formatted as JSON.
+
+================================================================================
+FULL CODE FOR EACH FILE
+================================================================================
+
+--------------------------------------------------------------------------------
+FILE 1: Student.cs
+Path: StudentAPI/Models/Student.cs
+--------------------------------------------------------------------------------
+namespace StudentAPI.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Course { get; set; }
+        public int Age { get; set; }
+    }
+}
+
+
+--------------------------------------------------------------------------------
+FILE 2: StudentController.cs
+Path: StudentAPI/Controllers/StudentController.cs
+--------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using StudentAPI.Models;
+using System.Collections.Generic;
+
+namespace StudentAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class StudentController : ControllerBase
+    {
+        [HttpGet]
+        public List<Student> GetStudents()
+        {
+            return new List<Student>()
+            {
+                new Student
+                {
+                    Id = 1,
+                    Name = "Pammee Gupta",
+                    Course = "BCA",
+                    Age = 20
+                },
+                new Student
+                {
+                    Id = 2,
+                    Name = "Tanu Gupta",
+                    Course = "BSC IT",
+                    Age = 21
+                }
+            };
+        }
+    }
+}
+
+
+--------------------------------------------------------------------------------
+FILE 3: Program.cs
+Path: StudentAPI/Program.cs
+--------------------------------------------------------------------------------
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+
+================================================================================
+EXPECTED JSON OUTPUT (AT: /api/Student)
+================================================================================
+[
+  {
+    "id": 1,
+    "name": "Pammee Gupta",
+    "course": "BCA",
+    "age": 20
+  },
+  {
+    "id": 2,
+    "name": "Tanu Gupta",
+    "course": "BSC IT",
+    "age": 21
+  }
+]
+
+================================================================================
+KEY CONCEPTS EXPLANATION (VIVA REFERENCE):
+================================================================================
+1. [ApiController]          : Enables API-specific features including attribute routing requirements and automatic HTTP 400 bad request responses.
+2. [Route("api/[controller]")]: Token-based routing attribute where [controller] takes the prefix name of the class ("Student"), creating the route /api/Student.
+3. ControllerBase           : Base class for Web API controllers that omits view-rendering support found in standard MVC Controller classes.
+4. [HttpGet]                : Action method selector restricting execution exclusively to incoming HTTP GET requests.
+5. Automatic JSON Parsing   : ASP.NET Core uses System.Text.Json by default to serialize C# object collections into clean JSON text.
+================================================================================
