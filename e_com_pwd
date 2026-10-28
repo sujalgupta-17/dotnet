@@ -1,0 +1,326 @@
+================================================================================
+PRACTICAL NO. 10(B): PROGRESSIVE WEB APPLICATION (PWA)
+"Develop an E-commerce PWA with product listing and offline cart functionality"
+================================================================================
+
+PROJECT SETUP SUMMARY:
+- Project Type: ASP.NET Core Empty (serves static PWA assets via wwwroot)
+- Template: ASP.NET Core Empty
+- Framework: .NET 6.0 / .NET 7.0 / .NET 8.0 (LTS)
+- Language: C# (.NET backend pipeline), HTML5, CSS3, JavaScript (Frontend & PWA)
+- Project Name: EcommercePWA
+
+================================================================================
+PROJECT FILE AND FOLDER STRUCTURE
+================================================================================
+EcommercePWA/
+│
+├── wwwroot/                             <-- Web root for client-side static assets
+│   ├── icons/                           <-- Application icons for PWA install
+│   │   └── app-icon.png                 <-- 192x192 PNG icon
+│   ├── app.js                           <-- Service worker registration & Cart logic
+│   ├── index.html                       <-- UI for Product Listing & Cart Items
+│   ├── manifest.json                    <-- PWA installation & display metadata
+│   └── service-worker.js                <-- Caching strategy & offline fetch handler
+│
+├── Program.cs                           <-- Pipeline enabling default and static files
+└── appsettings.json                     <-- Configuration file
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS FROM STEP ZERO (WHERE TO CLICK)
+================================================================================
+
+--- STEP 1: CREATE PROJECT IN VISUAL STUDIO ---
+1. Open Visual Studio.
+2. Click "Create a new project".
+3. In the search box at the top, type: ASP.NET Core Empty
+4. Select the template named:
+   "ASP.NET Core Empty" (make sure it has the C# tag).
+5. Click "Next".
+6. Configure project:
+   - Project name: EcommercePWA
+   - Location: Choose your preferred folder.
+7. Click "Next".
+8. In "Additional information":
+   - Framework: Select .NET 6.0, .NET 7.0, or .NET 8.0.
+   - Check "Configure for HTTPS".
+9. Click "Create".
+
+--- STEP 2: CONFIGURE PROGRAM.CS FOR STATIC FILE SERVING ---
+1. In Solution Explorer, open "Program.cs".
+2. Replace its content with the code in FILE 1 below to enable "app.UseDefaultFiles()" and "app.UseStaticFiles()".
+3. Save (Ctrl + S).
+
+--- STEP 3: CREATE WWWROOT & ICONS FOLDER ---
+1. In Solution Explorer, right-click the project name "EcommercePWA".
+2. If "wwwroot" does not exist: Hover over "Add" -> click "New Folder" -> name it: wwwroot
+3. Right-click the "wwwroot" folder -> Hover over "Add" -> click "New Folder" -> name it: icons
+4. Add any standard PNG picture (192x192 pixels) inside the "icons" folder and rename it:
+   app-icon.png
+
+--- STEP 4: CREATE SERVICE WORKER (service-worker.js) ---
+1. Right-click "wwwroot" -> Hover over "Add" -> click "New Item...".
+2. Under "Web" / "General", select "JavaScript File".
+3. Set the Name to:
+   service-worker.js
+4. Click "Add".
+5. Paste the complete code from FILE 2 below and save (Ctrl + S).
+
+--- STEP 5: CREATE WEB MANIFEST (manifest.json) ---
+1. Right-click "wwwroot" -> Hover over "Add" -> click "New Item...".
+2. Search or select "JSON File" (or "Web Configuration File" / Text file).
+3. Set the Name to:
+   manifest.json
+4. Click "Add".
+5. Paste the complete code from FILE 3 below and save (Ctrl + S).
+
+--- STEP 6: CREATE CART & APPLICATION SCRIPT (app.js) ---
+1. Right-click "wwwroot" -> Hover over "Add" -> click "New Item...".
+2. Select "JavaScript File".
+3. Set the Name to:
+   app.js
+4. Click "Add".
+5. Paste the complete code from FILE 4 below and save (Ctrl + S).
+
+--- STEP 7: CREATE STOREFRONT UI (index.html) ---
+1. Right-click "wwwroot" -> Hover over "Add" -> click "New Item...".
+2. Under "Web", select "HTML Page".
+3. Set the Name to:
+   index.html
+4. Click "Add".
+5. Paste the complete code from FILE 5 below and save (Ctrl + S).
+
+--- STEP 8: RUN AND TEST OFFLINE FUNCTIONALITY ---
+1. Press F5 (or Ctrl + F5) or click the green Play button ("https" / "IIS Express").
+2. The browser loads the store UI showing Cart Items on the left and Products on the right.
+3. Click "Add to Cart" on Mobile, Laptop, and Headphones:
+   - Notice they appear immediately under the Cart Items list.
+4. Open Chrome / Edge Developer Tools by pressing F12 (or Right-click -> Inspect).
+5. In the Developer Tools top menu:
+   - Go to the "Application" tab.
+   - Click "Service Workers" under the Application section on the left sidebar.
+   - Confirm the status shows "Activated and is running".
+6. Check the "[x] Offline" checkbox inside DevTools to simulate complete network disconnection.
+7. Refresh the page (F5):
+   - The application continues to load instantly because all essential assets were cached by the Service Worker!
+   - All cart items persist and you can continue adding items offline via localStorage!
+
+================================================================================
+FULL CODE FOR EACH FILE
+================================================================================
+
+--------------------------------------------------------------------------------
+FILE 1: Program.cs
+Path: EcommercePWA/Program.cs
+--------------------------------------------------------------------------------
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+// Enable serving default documents (index.html) and static files from wwwroot
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.Run();
+
+
+--------------------------------------------------------------------------------
+FILE 2: service-worker.js
+Path: EcommercePWA/wwwroot/service-worker.js
+--------------------------------------------------------------------------------
+const CACHE_NAME = 'ecommerce-cache-v1';
+const urlsToCache = [
+    '/',
+    '/index.html',
+    '/manifest.json',
+    '/app.js',
+    '/icons/app-icon.png'
+];
+
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+    );
+});
+
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => response || fetch(event.request))
+    );
+});
+
+
+--------------------------------------------------------------------------------
+FILE 3: manifest.json
+Path: EcommercePWA/wwwroot/manifest.json
+--------------------------------------------------------------------------------
+{
+  "name": "E-Commerce PWA",
+  "short_name": "ShopPWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icons/app-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+
+
+--------------------------------------------------------------------------------
+FILE 4: app.js
+Path: EcommercePWA/wwwroot/app.js
+--------------------------------------------------------------------------------
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('Service Worker Registered'));
+}
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function addToCart(product) {
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    displayCart();
+}
+
+function displayCart() {
+    const cartList = document.getElementById('cart-list');
+    cartList.innerHTML = '';
+    cart.forEach(item => {
+        let li = document.createElement('li');
+        li.textContent = item;
+        cartList.appendChild(li);
+    });
+}
+
+// Render persisted items from localStorage on initial page load
+window.onload = displayCart;
+
+
+--------------------------------------------------------------------------------
+FILE 5: index.html
+Path: EcommercePWA/wwwroot/index.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce PWA</title>
+    <!-- Link to PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f7f9fa;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        .cart-section {
+            width: 250px;
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            min-height: 200px;
+        }
+        .products-section {
+            flex-grow: 1;
+        }
+        .products-grid {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .product-card {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 15px;
+            width: 140px;
+            text-align: center;
+        }
+        .product-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .product-card p {
+            margin: 0 0 12px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        .product-card button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .product-card button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>E-Commerce PWA</h1>
+    <hr />
+
+    <div class="container">
+        <!-- Cart Items Section -->
+        <div class="cart-section">
+            <h3>Cart Items</h3>
+            <ul id="cart-list"></ul>
+        </div>
+
+        <!-- Product Listing Section -->
+        <div class="products-section">
+            <h3>Products</h3>
+            <div class="products-grid">
+                <div class="product-card">
+                    <h3>Mobile</h3>
+                    <p>Price: 20000</p>
+                    <button onclick="addToCart('Mobile Phone')">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <h3>Laptop</h3>
+                    <p>Price: 50000</p>
+                    <button onclick="addToCart('Laptop')">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <h3>Headphones</h3>
+                    <p>Price: 2000</p>
+                    <button onclick="addToCart('Headphones')">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to JavaScript application logic -->
+    <script src="/app.js"></script>
+</body>
+</html>
+
+================================================================================
+KEY CONCEPTS EXPLANATION (VIVA REFERENCE):
+================================================================================
+1. Service Worker        : A client-side script running in the background separate from the web page, enabling resource caching, offline functionality, and background sync.
+2. 'install' Event       : Fires once when the service worker is registered; uses caches.open() and cache.addAll() to cache key assets for offline use.
+3. 'fetch' Event         : Intercepts network HTTP requests; checks the cache first with caches.match() and falls back to network fetch() if the resource is not cached.
+4. manifest.json         : JSON configuration file providing app metadata (icons, display mode, theme colors) so the app can be installed on home screens.
+5. localStorage          : Synchronous key-value client-side browser storage used here to persist the cart items locally even when the device is completely offline.
+================================================================================
