@@ -1,0 +1,141 @@
+
+PROJECT SETUP SUMMARY:
+- Project Type: ASP.NET Web Application (.NET Framework)
+- Template: Empty (check "Web Forms" checkbox if available)
+
+Demorotator/
+│
+├── add.xml                    <-- XML Advertisement file storing ad details
+├── addrotator.aspx            <-- Web Form containing <asp:AdRotator>
+├── addrotator.aspx.cs         <-- Code-behind file (auto-generated)
+└── Images/                    <-- Folder containing banner advertisement pictures
+    ├── ad1.jpg                <-- First banner image
+    └── ad2.jpg                <-- Second banner image
+
+
+--- STEP 1: CREATE PROJECT IN VISUAL STUDIO ---
+1. Open Visual Studio.
+2. Click "Create a new project".
+3. In the search box at the top, type: ASP.NET Web Application
+4. Select the template named:
+   "ASP.NET Web Application (.NET Framework)" (make sure it has the C# tag).
+5. Click "Next".
+6. Project name: Demorotator
+7. Choose your desired location folder.
+8. Click "Create".
+9. In the next dialog, select the "Empty" template, check "Web Forms" if visible, and click "Create".
+
+--- STEP 2: CREATE IMAGES FOLDER AND ADD BANNER IMAGES ---
+1. In Solution Explorer on the right, right-click the project name "Demorotator".
+2. Hover over "Add" -> click "New Folder".
+3. Name the folder: Images
+4. Copy any two sample picture files into this folder and rename them to:
+   - ad1.jpg
+   - ad2.jpg
+
+--- STEP 3: CREATE THE ADVERTISEMENT XML FILE (add.xml) ---
+1. Right-click the project name "Demorotator" in Solution Explorer.
+2. Hover over "Add" -> click "New Item...".
+3. Under Visual C# on the left panel, click "Data" (or "General" / "Web").
+4. Select "XML File".
+5. Set the Name at the bottom to:
+   add.xml
+6. Click "Add".
+7. Delete all default text and paste the complete code from FILE 1 below.
+8. Save (Ctrl + S).
+
+--- STEP 4: CREATE THE WEB FORM (addrotator.aspx) ---
+1. Right-click the project name "Demorotator" in Solution Explorer.
+2. Hover over "Add" -> click "New Item...".
+3. Under Visual C#, select "Web".
+4. From the center list, choose "Web Form" (Do NOT pick "Web Form with Master Page").
+5. Name it:
+   addrotator.aspx
+6. Click "Add".
+7. Open "addrotator.aspx", delete all text, and paste the code from FILE 2 below.
+8. Save (Ctrl + S).
+
+--- STEP 5: RUN AND TEST THE ADROTATOR ---
+1. In Solution Explorer, right-click "addrotator.aspx".
+2. Click "Set As Start Page".
+3. Press F5 (or Ctrl + F5) or click the green Play button ("IIS Express") at the top.
+4. The web browser will load with one of the ads displayed.
+5. Refresh the page (F5 in browser) multiple times:
+   - Notice that the advertisement image switches randomly between ad1.jpg and ad2.jpg based on the impressions count.
+   - Clicking the ad banner will redirect you to Google or Microsoft.
+
+================================================================================
+FULL CODE FOR EACH FILE
+================================================================================
+
+--------------------------------------------------------------------------------
+FILE 1: add.xml
+Path: Demorotator/add.xml
+--------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8" ?>
+<Advertisements>
+  <Ad>
+    <ImageUrl>Images/ad1.jpg</ImageUrl>
+    <NavigateUrl>https://www.google.com</NavigateUrl>
+    <AlternateText>Google Ad</AlternateText>
+    <Impressions>50</Impressions>
+  </Ad>
+  <Ad>
+    <ImageUrl>Images/ad2.jpg</ImageUrl>
+    <NavigateUrl>https://www.microsoft.com</NavigateUrl>
+    <AlternateText>Microsoft Ad</AlternateText>
+    <Impressions>50</Impressions>
+  </Ad>
+</Advertisements>
+
+
+--------------------------------------------------------------------------------
+FILE 2: addrotator.aspx
+Path: Demorotator/addrotator.aspx
+--------------------------------------------------------------------------------
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="addrotator.aspx.cs" Inherits="Demorotator.addrotator" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>AdRotator Demo</title>
+</head>
+<body>
+    <form id="Form1" runat="server">
+        <div style="padding: 20px; font-family: Arial, sans-serif;">
+            <h2>ASP.NET AdRotator Control Demo</h2>
+            <hr />
+            <br />
+            <!-- AdRotator Control referencing the XML configuration file -->
+            <asp:AdRotator ID="AdRotator1" runat="server" AdvertisementFile="~/add.xml" />
+        </div>
+    </form>
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+FILE 3: addrotator.aspx.cs (Auto-generated code-behind)
+Path: Demorotator/addrotator.aspx.cs
+--------------------------------------------------------------------------------
+using System;
+using System.Web.UI;
+
+namespace Demorotator
+{
+    public partial class addrotator : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
+    }
+}
+
+================================================================================
+KEY XML TAGS EXPLANATION (VIVA REFERENCE):
+================================================================================
+1. <ImageUrl>      : Path to the image file to be displayed as the banner ad.
+2. <NavigateUrl>   : The URL/website opened when the user clicks the ad.
+3. <AlternateText> : Tooltip/alt text displayed if image fails to load or on hover.
+4. <Impressions>   : Relative weight/frequency of the ad appearing upon page refresh.
+================================================================================
